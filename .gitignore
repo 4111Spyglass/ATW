@@ -1,0 +1,9 @@
+RELEASE/
+Release/
+DEBUG/
+Debug/
+*.log
+*.tmp
+*.bak
+
+
