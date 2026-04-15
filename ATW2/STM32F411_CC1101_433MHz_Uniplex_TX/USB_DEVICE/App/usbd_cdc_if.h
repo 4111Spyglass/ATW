@@ -31,9 +31,7 @@
 #include "usbd_cdc.h"
 
 /* USER CODE BEGIN INCLUDE */
- extern volatile uint32_t usb_rx_calls;
- extern volatile uint32_t usb_rx_bytes;
- extern volatile uint32_t usb_irq_counter;
+
 /* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY

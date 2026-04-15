@@ -4,8 +4,6 @@
 #include "usbd_cdc_if.h"
 #include "usbd_def.h"
 
-#include "cppmain.hpp"
-#include "RF_USB_StateMachine.hpp"
 #include "States.hpp"
 
 #ifdef __cplusplus
@@ -32,7 +30,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // Only GDO0 is relevant: sync word detected → packet incoming
     if (GPIO_Pin == GD0_Pin)
     {
-        r_state = R_STATE_RX_READ;
+        rf_rx_state.state = R_STATE_RX_READ;
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     }
 }

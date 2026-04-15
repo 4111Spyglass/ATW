@@ -12,34 +12,10 @@
  *   - They represent the state of the entire TX pipeline
  *   - They must persist across state‑machine iterations
  */
-
 #include "States.hpp"
 
-// -----------------------------------------------------------------------------
-// Current USB → RF state machine state.
-// Starts in IDLE and transitions through:
-//
-//   IDLE → ACCUM → TX_PREP → TX_WAIT → IDLE
-//
-// Declared volatile because it is modified from both IRQ and main loop.
-// -----------------------------------------------------------------------------
-volatile U_State_t u_state = U_STATE_IDLE;
-
-// -----------------------------------------------------------------------------
-// Accumulation buffer filled by the USB CDC receive callback.
-// The RF state machine snapshots this buffer before transmission.
-// -----------------------------------------------------------------------------
-uint8_t usb_rf_buf[USB_RF_BUF_SIZE];
-
-// -----------------------------------------------------------------------------
-// Number of valid bytes currently stored in usb_rf_buf[].
-// Reset to zero after snapshotting in TX_PREP.
-// -----------------------------------------------------------------------------
-uint16_t usb_rf_len = 0;
-
-// -----------------------------------------------------------------------------
-// Inter‑packet timeout flag.
-// Set to 1 by TIM5 when the timeout expires.
-// Cleared by the state machine when TX begins.
-// -----------------------------------------------------------------------------
-volatile uint8_t usb_timeout_elapsed = 0;
+RF_TX_State rf_tx_state = {
+    .state = U_STATE_IDLE,
+    .current_buffer_length = 0,
+	.timeout_elapsed = 0
+};

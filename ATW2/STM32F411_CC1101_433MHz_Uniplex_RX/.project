@@ -30,4 +30,31 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Common</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Common/Inc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Common/Src</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Common/Inc/CC1101.hpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Common/Inc/CC1101.hpp</locationURI>
+		</link>
+		<link>
+			<name>Common/Src/CC1101.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Common/Src/CC1101.cpp</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

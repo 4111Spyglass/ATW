@@ -37,67 +37,63 @@
 // Each entry is { register_address, register_value }.
 // Addresses follow TI datasheet SWRS061.
 // -----------------------------------------------------------------------------
-static const struct {
-    uint8_t addr;
-    uint8_t value;
-} cc1101_init_regs[] = {
-
+static const CC1101_RegisterValueTuple cc1101_init_regs[] = {
 	// --- GDO Configuration ---------------------------------------------------
-	{0x00, 0x2E}, // IOCFG2: GDO2 PA_PD: high during TX, low when TX done
-	{0x02, 0x06}, // IOCFG0: GDO0 Packet received, CRC OK, deassert end of packet
+	{CC1101_ConfigurationRegister::IOCFG2, 0x2E}, // IOCFG2: GDO2 PA_PD: high during TX, low when TX done
+	{CC1101_ConfigurationRegister::IOCFG0, 0x07}, // IOCFG0: GDO0 assert Packet received with CRC OK, deassert with fifo read
 
 	// --- Sync Configuration ---------------------------------------------------
-	{0x04, 0x3D}, // SYNC1
-	{0x05, 0x0C}, // SYNC0
+	{CC1101_ConfigurationRegister::SYNC1, 0x3D}, // SYNC1
+	{CC1101_ConfigurationRegister::SYNC0, 0x0C}, // SYNC0
 
     // --- Packet Engine -------------------------------------------------------
-    {0x06, 0x3D}, // PKTLEN: Max payload = 61 bytes
-    {0x07, 0x0C}, // PKTCTRL1: No address check
-    {0x08, 0x05}, // PKTCTRL0: Variable length, CRC enabled, whitening
+    {CC1101_ConfigurationRegister::PKTLEN, 0x3D}, // PKTLEN: Max payload = 61 bytes
+    {CC1101_ConfigurationRegister::PKTCTRL1, 0x0C}, // PKTCTRL1: No address check
+    {CC1101_ConfigurationRegister::PKTCTRL0, 0x05}, // PKTCTRL0: Variable length, CRC enabled, whitening
 
     // --- Frequency Synthesizer ----------------------------------------------
-    {0x0B, 0x06}, // FSCTRL1: IF frequency offset
-    {0x0C, 0x00}, // FSCTRL0: Frequency offset (LSB)
+    {CC1101_ConfigurationRegister::FSCTRL1, 0x06}, // FSCTRL1: IF frequency offset
+    {CC1101_ConfigurationRegister::FSCTRL0, 0x00}, // FSCTRL0: Frequency offset (LSB)
 
     // 433.92 MHz center frequency (per TI calculator)
-    {0x0D, 0x10}, // FREQ2
-    {0x0E, 0xA1}, // FREQ1
-    {0x0F, 0x7A}, // FREQ0
+    {CC1101_ConfigurationRegister::FREQ2, 0x10}, // FREQ2
+    {CC1101_ConfigurationRegister::FREQ1, 0xA1}, // FREQ1
+    {CC1101_ConfigurationRegister::FREQ0, 0x7A}, // FREQ0
 
     // --- Modem Configuration -------------------------------------------------
-    {0x10, 0xCA}, // MDMCFG4: 38.4 kbps, channel BW
-    {0x11, 0x83}, // MDMCFG3: Data rate (mantissa)
-    {0x12, 0x13}, // MDMCFG2: 30/32 sync, 2‑FSK, whitening enabled
-    {0x13, 0x22}, // MDMCFG1: FEC off, preamble length
-    {0x14, 0xF8}, // MDMCFG0: Channel spacing
+    {CC1101_ConfigurationRegister::MDMCFG4, 0xCA}, // MDMCFG4: 38.4 kbps, channel BW
+    {CC1101_ConfigurationRegister::MDMCFG3, 0x83}, // MDMCFG3: Data rate (mantissa)
+    {CC1101_ConfigurationRegister::MDMCFG2, 0x13}, // MDMCFG2: 30/32 sync, 2‑FSK, whitening enabled
+    {CC1101_ConfigurationRegister::MDMCFG1, 0x22}, // MDMCFG1: FEC off, preamble length
+    {CC1101_ConfigurationRegister::MDMCFG0, 0xF8}, // MDMCFG0: Channel spacing
 
-    {0x15, 0x34}, // DEVIATN: Frequency deviation
+    {CC1101_ConfigurationRegister::DEVIATN, 0x34}, // DEVIATN: Frequency deviation
 
     // --- Main Radio Control --------------------------------------------------
-    {0x18, 0x18}, // MCSM0: Auto‑calibrate on IDLE→TX (important for RX!)
+    {CC1101_ConfigurationRegister::MCSM0, 0x18}, // MCSM0: Auto‑calibrate on IDLE→TX (important for RX!)
 
     // --- AGC / Frequency Compensation ----------------------------------------
-    {0x19, 0x16}, // FOCCFG: Frequency offset compensation
-    {0x1A, 0x6C}, // BSCFG: Bit synchronization
-    {0x1B, 0x03}, // AGCCTRL2: AGC target
-    {0x1C, 0x40}, // AGCCTRL1: AGC hysteresis
-    {0x1D, 0x91}, // AGCCTRL0: AGC filter settings
+    {CC1101_ConfigurationRegister::FOCCFG, 0x16}, // FOCCFG: Frequency offset compensation
+    {CC1101_ConfigurationRegister::BSCFG, 0x6C}, // BSCFG: Bit synchronization
+    {CC1101_ConfigurationRegister::AGCTRL2, 0x03}, // AGCCTRL2: AGC target
+    {CC1101_ConfigurationRegister::AGCTRL1, 0x40}, // AGCCTRL1: AGC hysteresis
+    {CC1101_ConfigurationRegister::AGCTRL0, 0x91}, // AGCCTRL0: AGC filter settings
 
     // --- Front End -----------------------------------------------------------
-    {0x21, 0x56}, // FREND1: Front‑end RX configuration
-    {0x22, 0x10}, // FREND0
+    {CC1101_ConfigurationRegister::FREND1, 0x56}, // FREND1: Front‑end RX configuration
+    {CC1101_ConfigurationRegister::FREND0, 0x10}, // FREND0
 
     // --- Frequency Synthesizer Calibration -----------------------------------
-    {0x23, 0xE9}, // FSCAL3
-    {0x24, 0x2A}, // FSCAL2
-    {0x25, 0x00}, // FSCAL1
-    {0x26, 0x1F}, // FSCAL0
+    {CC1101_ConfigurationRegister::FSCAL3, 0xE9}, // FSCAL3
+    {CC1101_ConfigurationRegister::FSCAL2, 0x2A}, // FSCAL2
+    {CC1101_ConfigurationRegister::FSCAL1, 0x00}, // FSCAL1
+    {CC1101_ConfigurationRegister::FSCAL0, 0x1F}, // FSCAL0
 
     // --- Test Registers (TI Recommended) -------------------------------------
-    {0x29, 0x59}, // FSTEST: Synthesizer test
-    {0x2C, 0x81}, // TEST2: Modem test
-    {0x2D, 0x35}, // TEST1: Modem test
-    {0x2E, 0x09}, // TEST0: Modem test
+    {CC1101_ConfigurationRegister::FSTEST, 0x59}, // FSTEST: Synthesizer test
+    {CC1101_ConfigurationRegister::TEST2, 0x81}, // TEST2: Modem test
+    {CC1101_ConfigurationRegister::TEST1, 0x35}, // TEST1: Modem test
+    {CC1101_ConfigurationRegister::TEST0, 0x09}, // TEST0: Modem test
 };
 
 static constexpr uint8_t CC1101_READ = 0x80;
@@ -125,20 +121,22 @@ static void CC1101_Deselect(void)
 }
 
 // -----------------------------------------------------------------------------
-// Register Access
+// Single Byte Read/Write Helpers
 // -----------------------------------------------------------------------------
-void CC1101_WriteReg(uint8_t addr, uint8_t value)
+
+void CC1101_WriteRegister(uint8_t addr, uint8_t value)
 {
-    uint8_t tx[2] = { addr, value };
+    uint8_t tx[2]{ addr, value };
+    
     CC1101_Select();
     HAL_SPI_Transmit(&hspi1, tx, 2, HAL_MAX_DELAY);
     CC1101_Deselect();
 }
 
-uint8_t CC1101_ReadReg(uint8_t addr)
+uint8_t CC1101_ReadRegister(uint8_t addr)
 {
-    uint8_t tx[2] = { (uint8_t)(addr | CC1101_READ), 0x00 };
-    uint8_t rx[2] = {0};
+    uint8_t tx[2]{ static_cast<uint8_t>(addr | CC1101_READ), 0x00 };
+    uint8_t rx[2]{};
 
     CC1101_Select();
     HAL_SPI_TransmitReceive(&hspi1, tx, rx, 2, HAL_MAX_DELAY);
@@ -147,15 +145,29 @@ uint8_t CC1101_ReadReg(uint8_t addr)
     return rx[1];
 }
 
-uint8_t CC1101_ReadStatusReg(uint8_t addr) {
+
+// -----------------------------------------------------------------------------
+// Configuration Register Access
+// -----------------------------------------------------------------------------
+void CC1101_WriteConfiguration(CC1101_ConfigurationRegister addr, uint8_t value)
+{
+    CC1101_WriteRegister(static_cast<uint8_t>(addr), value);
+}
+
+uint8_t CC1101_ReadConfiguration(CC1101_ConfigurationRegister addr)
+{
+    return CC1101_ReadRegister(static_cast<uint8_t>(addr));
+}
+
+uint8_t CC1101_ReadStatus(CC1101_StatusRegister addr) {
     // Status registers (0x30-0x3D) require bits 0x80 (Read) AND 0x40 (Burst)
-    return CC1101_ReadReg(addr | CC1101_BURST);
+    return CC1101_ReadRegister(static_cast<uint8_t>(addr) | CC1101_BURST);
 }
 
 // -----------------------------------------------------------------------------
 // Strobe Commands
 // -----------------------------------------------------------------------------
-uint8_t CC1101_Strobe(CC1101_StrobeCmd strobe)
+uint8_t CC1101_Strobe(CC1101_StrobeCommand strobe)
 {
     uint8_t cmd = static_cast<uint8_t>(strobe);
     uint8_t status = 0;
@@ -170,12 +182,13 @@ uint8_t CC1101_Strobe(CC1101_StrobeCmd strobe)
 // -----------------------------------------------------------------------------
 // Burst FIFO Access
 // -----------------------------------------------------------------------------
-void CC1101_WriteBurst(uint8_t addr, const uint8_t *data, uint8_t len)
+void CC1101_WriteBurst(CC1101_BurstRegister addr, const uint8_t *data, uint8_t len)
 {
-    if (len > 63) len = 63;
+    if (len > 64) len = 64;
 
-    uint8_t buffer[64];
-    buffer[0] = addr | CC1101_BURST;
+    uint8_t buffer[64+1];
+    constexpr uint8_t BURST_READ = CC1101_BURST | CC1101_WRITE;
+    buffer[0] = static_cast<uint8_t>(addr) | BURST_READ;
     memcpy(&buffer[1], data, len);
 
     CC1101_Select();
@@ -183,10 +196,10 @@ void CC1101_WriteBurst(uint8_t addr, const uint8_t *data, uint8_t len)
     CC1101_Deselect();
 }
 
-void CC1101_ReadBurst(uint8_t addr, uint8_t *data, uint8_t len)
+void CC1101_ReadBurst(CC1101_BurstRegister addr, uint8_t *data, uint8_t len)
 {
     constexpr uint8_t BURST_READ = CC1101_BURST | CC1101_READ;
-	uint8_t header = addr | BURST_READ;
+	uint8_t header = static_cast<uint8_t>(addr) | BURST_READ;
 
 
     CC1101_Select();
@@ -225,15 +238,23 @@ void CC1101_Reset()
 void CC1101_Init()
 {
     CC1101_Reset();
-
-    for (unsigned i = 0; i < sizeof(cc1101_init_regs)/sizeof(cc1101_init_regs[0]); i++)
-        CC1101_WriteReg(cc1101_init_regs[i].addr, cc1101_init_regs[i].value);
-
+    CC1101_Configure(cc1101_init_regs, sizeof(cc1101_init_regs) / sizeof(CC1101_RegisterValueTuple));
+    
     // Flush FIFOs
-    CC1101_Strobe(CC1101_StrobeCmd::SFRX);
-    CC1101_Strobe(CC1101_StrobeCmd::SFTX);
+    CC1101_Strobe(CC1101_StrobeCommand::SFRX);
+    CC1101_Strobe(CC1101_StrobeCommand::SFTX);
 
     // Enter SLEEP — RX state machine will explicitly issue SRX
-    CC1101_Strobe(CC1101_StrobeCmd::SIDLE);
-    CC1101_Strobe(CC1101_StrobeCmd::SPWD);
+    CC1101_Strobe(CC1101_StrobeCommand::SIDLE);
+    CC1101_Strobe(CC1101_StrobeCommand::SPWD);
 }
+
+// -----------------------------------------------------------------------------
+// CC1101 Configure with a pairs of CC1101_ConfigurationRegister, uint8_t
+// -----------------------------------------------------------------------------
+
+void CC1101_Configure(const CC1101_RegisterValueTuple *tuples, size_t num_tuples)
+{
+    for (size_t i = 0; i < num_tuples; i++)
+        CC1101_WriteConfiguration(tuples[i].addr, tuples[i].value);
+}   

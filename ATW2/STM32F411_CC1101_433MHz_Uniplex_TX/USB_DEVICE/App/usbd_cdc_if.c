@@ -22,7 +22,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "States.hpp"
+#include "Callbacks.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,9 +31,7 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-volatile uint32_t usb_rx_calls = 0;
-volatile uint32_t usb_rx_bytes = 0;
-volatile uint32_t usb_irq_counter = 0;
+
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -263,32 +261,8 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-	usb_irq_counter++;
-	usb_rx_calls++;
-	usb_rx_bytes += *Len;
+  return User_CDC_Receive_FS(Buf, Len);
 
-	// Only accumulate when not in TX pipeline
-	if (u_state == U_STATE_IDLE || u_state == U_STATE_ACCUM)
-	{
-		for (uint32_t i = 0; i < *Len && usb_rf_len < USB_RF_BUF_SIZE; i++)
-			usb_rf_buf[usb_rf_len++] = Buf[i];
-
-		if (usb_rf_len > 0)
-		{
-			u_state = U_STATE_ACCUM;
-
-			// (Re)start inter‑packet timeout
-			usb_timeout_elapsed = 0;
-			HAL_TIM_Base_Stop_IT(&htim5);
-			__HAL_TIM_SET_COUNTER(&htim5, 0);
-			HAL_TIM_Base_Start_IT(&htim5);
-		}
-	}
-	// else: we are in TX_PREP / TX_WAIT → drop or later extend with a second buffer
-
-	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-	return USBD_OK;
   /* USER CODE END 6 */
 }
 

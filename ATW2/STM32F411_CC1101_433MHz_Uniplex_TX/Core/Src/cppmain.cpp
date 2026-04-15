@@ -11,9 +11,9 @@
  * The main loop is intentionally simple and non‑blocking.
  */
 
+#include <Callbacks.h>
 #include "cppmain.hpp"
 #include "CC1101.hpp"
-#include "Callbacks.h"
 #include "States.hpp"
 #include "USB_RF_StateMachine.hpp"
 #include "usbd_cdc_if.h"
@@ -39,8 +39,9 @@ int cppmain(void)
     // PARTNUM should be 0x00 for CC1101
     // VERSION varies by silicon revision (e.g., 0x14, 0x04, etc.)
     // -------------------------------------------------------------------------
-    uint8_t partnum  = CC1101_ReadReg(0x30 | 0x80 | 0x40);
-    uint8_t version  = CC1101_ReadReg(0x31 | 0x80 | 0x40);
+	CC1101_ReadStatus(CC1101_StatusRegister::PARTNUM);
+	uint8_t partnum = CC1101_ReadStatus(CC1101_StatusRegister::PARTNUM);
+	uint8_t version = CC1101_ReadStatus(CC1101_StatusRegister::VERSION);
 
     char buffer[128];
     sprintf(buffer, "CC1101: PARTNUM=%u VERSION=%u\n", partnum, version);
@@ -61,6 +62,7 @@ int cppmain(void)
     // The state machine is non‑blocking and safe to call at high frequency.
     // -------------------------------------------------------------------------
     static uint32_t last_print = 0;
+    USB_RF_StateMachine<RF_TX_State> rf_tx_state_machine(rf_tx_state);
 
     while (1)
     {
@@ -75,13 +77,13 @@ int cppmain(void)
                     usb_irq_counter,
                     usb_rx_calls,
                     usb_rx_bytes,
-                    usb_rf_len,
-                    u_state);
+					rf_tx_state.current_buffer_length,
+					rf_tx_state.state);
 
             CDC_Transmit_FS((uint8_t*)dbg, strlen(dbg));
         }
 
         // Execute one step of the USB→RF transmit state machine
-        USB_RF_StateMachine();
+        rf_tx_state_machine.process();
     }
 }
