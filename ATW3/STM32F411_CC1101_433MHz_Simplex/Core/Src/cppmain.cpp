@@ -2,39 +2,32 @@
 #include "usbd_cdc_if.h"
 
 #include "cppmain.hpp"
-
 #include "CC1101.hpp"
-#include "CC1101_Arbiter.hpp"
-#include "RF_USB_StateMachine.hpp"
-#include "USB_RF_StateMachine.hpp"
-#include "States_RX.hpp"
-#include "States_TX.hpp"
+#include "CC1101Manager.hpp"
+#include "GpioPin.hpp"
 
-extern TIM_HandleTypeDef htim5;
+using CC1101_GPIO = GpioPin<GPIOA_BASE, SPI1_CS_Pin>;
+using CC1101_T    = CC1101<CC1101_GPIO>;
+using CC1101Manager_T = CC1101Manager<CC1101_T>;
 
-// Global RX/TX state structures (you already have these)
-extern RF_RX_State rf_rx_state;
-extern RF_TX_State rf_tx_state;
+CC1101_T cc1101;
+CC1101Manager_T radio_manager(cc1101);
 
 int cppmain(void)
 {
     HAL_Delay(5000);
-    HAL_TIM_Base_Start_IT(&htim5);
 
     // Warm‑up SPI / CC1101
-    CC1101_ReadStatus(CC1101_StatusRegister::PARTNUM);
-    uint8_t partnum = CC1101_ReadStatus(CC1101_StatusRegister::PARTNUM);
-    uint8_t version = CC1101_ReadStatus(CC1101_StatusRegister::VERSION);
+    cc1101.ReadStatus(CC1101_T::StatusRegister::PARTNUM);
+    uint8_t partnum = cc1101.ReadStatus(CC1101_T::StatusRegister::PARTNUM);
+    uint8_t version = cc1101.ReadStatus(CC1101_T::StatusRegister::VERSION);
     char buffer[64];
     sprintf(buffer, "CC1101: %u %u\r\n", partnum, version);
     CDC_Transmit_FS((uint8_t*)buffer, strlen(buffer));
 
-    CC1101_Init();
+    cc1101.Init();
+    cc1101.SetPower(CC1101_T::TXPower::HIGH);
 
-    CC1101_Arbiter arbiter;
-
-    RF_USB_StateMachine<RF_RX_State> rf_rx_state_machine(rf_rx_state, arbiter);
-    USB_RF_StateMachine<RF_TX_State> rf_tx_state_machine(rf_tx_state, arbiter);
 
     uint32_t last_print = HAL_GetTick();
 
@@ -48,8 +41,6 @@ int cppmain(void)
             // CDC_Transmit_FS((uint8_t*)hb, 1);
         }
 
-        rf_rx_state_machine.process();
-        rf_tx_state_machine.process();
-        // arbiter.status();
+        radio_manager.process();
     }
 }
