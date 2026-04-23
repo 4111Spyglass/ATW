@@ -13,6 +13,7 @@ The result:
 - Clean, predictable radio control
 
 ## ✨ Features
+  **Allows setting the carrier frequency and the power level**
 
 - **Unified 4‑state radio controller**  
   `INIT → RX_LISTENING → RX_PROCESSING → TX_START → TX_WAIT_END`
