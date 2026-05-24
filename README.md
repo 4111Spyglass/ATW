@@ -1,5 +1,5 @@
-# ATW
-Codes for my at the workbench episodes on my YouTue channel [4111Spyglass](https://www.youtube.com/channel/UCgnyTfVmMfb3XQfzlQwFH_g)
+# At the Workbench (ATW)
+Codes for my at the workbench episodes on my YouTube channel [4111Spyglass](https://www.youtube.com/channel/UCgnyTfVmMfb3XQfzlQwFH_g)
 
 - [From USB Bytes to Radio Waves: The TX Node Build](https://youtu.be/xq9mVILDfYQ)
 - [Why My RF Link Failed; ​And How I Finally Fixed It​](https://youtu.be/5pwPYDL50mc)
