@@ -7,3 +7,4 @@ Codes for my at the workbench episodes on my YouTube channel [4111Spyglass](http
 - [Battle of the CC1101 Boards:​433 MHz against 915 MHz​](https://youtu.be/dQJjb_3D_nk)
 - [Putting my PnP machine to the test: the SatNOGS Encoder​](https://youtu.be/pX_CqabWAyU)
 - [Testing PCBs on the Lathe​](https://youtu.be/o1NMdjnVoTk)
+- [I Built a Meshtastic Node Without a Radio​](https://youtu.be/7HfmP9zTIpI)
