@@ -1,0 +1,31 @@
+# --- Python Artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- VS Code ---
+.vscode/
+
+# --- PyCharm / IntelliJ ---
+.idea/
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
+*.log
+
+# --- project folders ---
+data/
+Data/
+inactive/
